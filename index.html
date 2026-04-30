@@ -1553,6 +1553,7 @@ function muClearLog(){
 }
 
 function muRefreshStats(){
+  if(typeof storedRows!=='function')return;
   const rows=storedRows();
   const periods=[...new Set(rows.map(r=>r.period))].filter(Boolean);
   const skus=[...new Set(rows.map(r=>r.sku||r.asin))].filter(Boolean);
@@ -1580,13 +1581,10 @@ function muExport(){
 }
 
 // muRenderLog and muRefreshStats deferred — $ is defined in the next script block
+// Wire muInput file picker on load
 window.addEventListener('load', function(){
-  muRenderLog();
-  muRefreshStats();
-  // Wire muInput file picker
   const inp = document.getElementById('muInput');
   if(inp) inp.onchange = function(e){ const f=e.target.files[0]; if(f)muHandle(f); inp.value=''; };
-  // Restore stored data — runs here so Chart.js is guaranteed loaded
 });
 
 </script>
@@ -1797,13 +1795,13 @@ function confirmDeleteMonths(){
 
   // Also remove any saved workspace predictions for deleted months
   try{
-    const preds=JSON.parse(localStorage.getItem('ll_preds_v2')||'[]');
+    const preds=storedPreds();
     const keptPreds=preds.filter(p=>{
       // Match by pSort value
       const target=p.yr*100+p.mo;
       return![...toDelete].some(period=>pSort(period)===target);
     });
-    localStorage.setItem('ll_preds_v2',JSON.stringify(keptPreds));
+    savePreds(keptPreds);
   }catch{}
 
   closeDeleteMonthModal();
@@ -1950,6 +1948,7 @@ function parseCSV(raw,fname){
 
 // ── Handle new rows — merge with stored, detect conflicts ────────────────────
 function handleNewRows(newRows,fname){
+  if(typeof storedRows!=='function'){console.warn('Drive not ready');return;}
   const existing=storedRows();
   const existingPeriods=new Set(existing.map(r=>r.period));
   const newPeriods=[...new Set(newRows.map(r=>r.period).filter(Boolean))];
@@ -2160,6 +2159,7 @@ const DAYS_IN_MO=(yr,mo)=>new Date(yr,mo,0).getDate();
 
 // ── Auto-restore on page load ─────────────────────────────────────────────────
 function restoreOnLoad(){
+  if(typeof storedRows!=='function')return;
   const stored=storedRows();
   if(!stored.length)return;
   try{
@@ -2267,7 +2267,7 @@ function buildPredictions(){
 
   // Load event tags from localStorage (same key as workspace)
   let eventSet=new Set();
-  try{eventSet=new Set(JSON.parse(localStorage.getItem('ll_events_v2')||'[]'));}catch{}
+  try{eventSet=new Set(llGetEvents());}catch{}
 
   const pm=buildPortfolioMonthly();
   const lm=pm[CMP_PERIOD]||{};
@@ -3046,7 +3046,7 @@ function refreshPred(btn){btn.classList.add('spin');setTimeout(()=>{buildPredict
 // ── Read manual Workspace prediction for NEXT_LABEL month ─────────────────
 function getManualPred(){
   try{
-    const saved=JSON.parse(localStorage.getItem('ll_preds_v2')||'[]');
+    const saved=storedPreds();
     const bs=pSort(CMP_PERIOD),bYr=Math.floor(bs/100),bMo=bs%100;
     const nMo=bMo===12?1:bMo+1,nYr=bMo===12?bYr+1:bYr;
     return saved.find(s=>s.yr===nYr&&s.mo===nMo)||null;
@@ -3198,7 +3198,7 @@ function fDelta(v,fmt){if(v==null)return'—';return(v>0?'+':'')+fmt(v);}
 function renderAcc(){
   // ── Find the most recent month that has a saved manual prediction ────────
   let savedPreds=[];
-  try{savedPreds=JSON.parse(localStorage.getItem('ll_preds_v2')||'[]');}catch{}
+  try{savedPreds=JSON.parse(JSON.stringify(storedPreds()));}catch{}
 
   // Build portfolio monthly data for all periods
   const pm=buildPortfolioMonthly();
@@ -4266,8 +4266,8 @@ function lcYrDrillMonth(yr,mo,cell){
   window._llTourNext    = () => goTo(currentStep + 1);
   window._llTourDismiss = () => dismiss();
 
-  // Start
-  goTo(0);
+  // Start — wait for Drive auth to complete first
+  window.addEventListener('ll-app-ready', function(){ goTo(0); }, { once: true });
 })();
 
 </script>
