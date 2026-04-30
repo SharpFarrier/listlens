@@ -37,6 +37,7 @@ function llSignIn() {
         .then(r => r.json())
         .then(info => {
           _userEmail = info.email;
+          sessionStorage.setItem('ll_user_email', _userEmail);
           _initDrive();
         });
     }
@@ -47,6 +48,7 @@ function llSignIn() {
 function llSignOut() {
   if (_token) google.accounts.oauth2.revoke(_token, function(){});
   _token = null; _userEmail = null;
+  sessionStorage.removeItem('ll_user_email');
   _showAuthScreen();
 }
 
@@ -219,6 +221,8 @@ function _showApp() {
   document.getElementById('ll-app').style.display     = 'block';
   var badge = document.getElementById('ll-user-badge');
   if (badge) badge.textContent = _userEmail || '';
+  // Signal app is ready (used by tutorial)
+  window.dispatchEvent(new Event('ll-app-ready'));
 }
 function _showAccessDenied() {
   document.getElementById('ll-loading').style.display = 'none';
@@ -241,7 +245,47 @@ function _updateDriveDot(status) {
   if (dot) dot.style.background = status === 'ok' ? '#00d4aa' : '#f59e0b';
 }
 
-// ── Boot: show auth screen once DOM is ready ──────────────────────────────────
+// ── Boot: try silent sign-in first, show auth screen only if needed ────────────
 document.addEventListener('DOMContentLoaded', function() {
-  _showAuthScreen();
+  // Try silent token refresh — works if user has already consented this session
+  // Store email in sessionStorage so we can attempt silent refresh on reload
+  var savedEmail = sessionStorage.getItem('ll_user_email');
+  if (savedEmail) {
+    // User was signed in — try silent token refresh
+    _trySilentSignIn();
+  } else {
+    _showAuthScreen();
+  }
 });
+
+function _trySilentSignIn() {
+  _showLoading('Signing in…');
+  try {
+    var client = google.accounts.oauth2.initTokenClient({
+      client_id: LL_CLIENT_ID,
+      scope: LL_SCOPES,
+      prompt: '',  // empty = silent, no popup
+      hint: sessionStorage.getItem('ll_user_email') || '',
+      callback: function(resp) {
+        if (resp.error) {
+          // Silent failed — show auth screen
+          _showAuthScreen();
+          return;
+        }
+        _token = resp.access_token;
+        fetch('https://www.googleapis.com/oauth2/v3/userinfo',
+          { headers: { Authorization: 'Bearer ' + _token } })
+          .then(function(r){ return r.json(); })
+          .then(function(info) {
+            _userEmail = info.email;
+            sessionStorage.setItem('ll_user_email', _userEmail);
+            _initDrive();
+          })
+          .catch(function(){ _showAuthScreen(); });
+      }
+    });
+    client.requestAccessToken();
+  } catch(e) {
+    _showAuthScreen();
+  }
+}
