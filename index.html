@@ -2584,14 +2584,16 @@ function build(rows){
     const k=r.asin||r.title||'?';
     if(!ASIN_MAP[k])ASIN_MAP[k]={asin:r.asin,title:r.title,sku:r.sku,category:r.category,months:{}};
     const p=r.period;
-    if(!ASIN_MAP[k].months[p])ASIN_MAP[k].months[p]={rev:0,units:0,pv:0,cvr:null,bbox:null,cSum:0,cCnt:0};
+    if(!ASIN_MAP[k].months[p])ASIN_MAP[k].months[p]={rev:0,units:0,pv:0,cvr:null,bbox:null};
     ASIN_MAP[k].months[p].rev  +=(r.revenue_n||0);
     ASIN_MAP[k].months[p].units+=(r.units_n||0);
     ASIN_MAP[k].months[p].pv   +=(r.pv_n||0);
-    if(r.cvr_n!=null){ASIN_MAP[k].months[p].cSum+=r.cvr_n;ASIN_MAP[k].months[p].cCnt++;}
     if(r.buyBox_n!=null)ASIN_MAP[k].months[p].bbox=r.buyBox_n;
   });
-  Object.values(ASIN_MAP).forEach(l=>Object.values(l.months).forEach(m=>{if(m.cCnt>0)m.cvr=m.cSum/m.cCnt;}));
+  // CVR = units / pv (page-view based, always consistent with workspace calculation)
+  Object.values(ASIN_MAP).forEach(l=>Object.values(l.months).forEach(m=>{
+    m.cvr = m.pv>0 ? m.units/m.pv : null;
+  }));
 
   ALL_PERIODS=[...new Set(rows.map(r=>r.period).filter(Boolean))].sort((a,b)=>pSort(a)-pSort(b));
   CMP_PERIOD=ALL_PERIODS[ALL_PERIODS.length-1];
