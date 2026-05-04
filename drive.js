@@ -5,7 +5,7 @@
 // ═══════════════════════════════════════════════════════════════════════════
 
 const LL_CLIENT_ID = '801481705797-4lr6orueunsbdk5vhhe578bga4ai6lhq.apps.googleusercontent.com';
-const LL_SCOPES    = 'https://www.googleapis.com/auth/drive.file';
+const LL_SCOPES    = 'https://www.googleapis.com/auth/drive';
 const LL_FOLDER    = 'ListLens';
 
 // Drive file names
@@ -29,6 +29,7 @@ function llSignIn() {
   const client = google.accounts.oauth2.initTokenClient({
     client_id: LL_CLIENT_ID,
     scope: LL_SCOPES,
+    prompt: 'consent',
     callback: function(resp) {
       if (resp.error) { _showAuthError(resp.error); return; }
       _token = resp.access_token;
@@ -55,9 +56,10 @@ function llSignOut() {
 // ── Drive init ────────────────────────────────────────────────────────────────
 function _initDrive() {
   _showLoading('Loading your data…');
-  _findOrCreateFolder(LL_FOLDER)
-    .then(function(fid) {
-      _folderId = fid;
+  // Use the hardcoded shared folder — all users read/write the same data
+  _folderId = '1EJnFm5Ndx_iP9TTAA7eR30KFbOSOAxq2';
+  Promise.resolve(_folderId)
+    .then(function() {
       // Check user access list
       return _readFile(DF_USERS, []);
     })
