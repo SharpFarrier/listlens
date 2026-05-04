@@ -135,7 +135,27 @@ function _readFile(name, fallback) {
     if (!id) return fallback;
     return fetch('https://www.googleapis.com/drive/v3/files/' + id + '?alt=media',
       { headers: { Authorization: 'Bearer ' + _token } })
-      .then(function(r){ return r.ok ? r.json() : fallback; })
+      .then(function(r){ return r.ok ? r.text() : null; })
+      .then(function(text) {
+        if (!text) return fallback;
+        try {
+          return JSON.parse(text);
+        } catch(e) {
+          // Handle malformed JSON (e.g. two arrays concatenated from manual Drive upload)
+          // Try to extract all valid JSON arrays/objects and merge them
+          var matches = text.match(/\[[^\]]*\]/g) || [];
+          if (matches.length > 1 && Array.isArray(fallback)) {
+            var merged = [];
+            matches.forEach(function(m) {
+              try { var arr = JSON.parse(m); if (Array.isArray(arr)) merged = merged.concat(arr); } catch(e2) {}
+            });
+            // Deduplicate and auto-repair by writing back correct JSON
+            merged = merged.filter(function(v,i,a){ return a.indexOf(v) === i; });
+            if (merged.length) { _writeFile(name, merged); return merged; }
+          }
+          return fallback;
+        }
+      })
       .catch(function(){ return fallback; });
   }).catch(function(){ return fallback; });
 }
