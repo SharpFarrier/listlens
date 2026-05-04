@@ -221,6 +221,9 @@ function _showApp() {
   document.getElementById('ll-app').style.display     = 'block';
   var badge = document.getElementById('ll-user-badge');
   if (badge) badge.textContent = _userEmail || '';
+  // Update upload page stats now that data is loaded
+  if (typeof muRefreshStats === 'function') muRefreshStats();
+  if (typeof muRenderLog === 'function') muRenderLog();
   // Signal app is ready (used by tutorial)
   window.dispatchEvent(new Event('ll-app-ready'));
 }
