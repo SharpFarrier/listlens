@@ -756,6 +756,462 @@ html{transition:background .2s,color .2s}
 .yr-drill-kpi-val{font-family:var(--fn);font-size:18px;font-weight:700;color:var(--text)}
 .yr-drill-kpi-label{font-family:var(--fn);font-size:9px;color:var(--text4);text-transform:uppercase;letter-spacing:.08em;margin-top:1px}
 
+
+/* ── Mobile responsive ── */
+/* ═══════════════════════════════════════════════════════════════════
+   MOBILE RESPONSIVE — 390px viewport
+   Strategy: hide sidebar → bottom nav bar, collapse topbar,
+   stack layouts, fix chart heights
+═══════════════════════════════════════════════════════════════════ */
+
+/* ── Bottom nav ──────────────────────────────────────────────────── */
+.mob-nav {
+  display: none;
+  position: fixed;
+  bottom: 0; left: 0; right: 0;
+  height: 60px;
+  background: var(--bg2);
+  border-top: 1px solid var(--border2);
+  z-index: 100;
+  padding: 0 4px;
+  padding-bottom: env(safe-area-inset-bottom, 0);
+}
+.mob-nav-items {
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  height: 100%;
+}
+.mob-nav-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  padding: 6px 10px;
+  border-radius: 10px;
+  cursor: pointer;
+  flex: 1;
+  transition: background .15s;
+  border: none;
+  background: none;
+  color: var(--text3);
+}
+.mob-nav-item.on {
+  color: var(--teal);
+}
+.mob-nav-item svg {
+  opacity: .6;
+  transition: opacity .15s;
+}
+.mob-nav-item.on svg {
+  opacity: 1;
+}
+.mob-nav-label {
+  font-family: var(--fn);
+  font-size: 9px;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+  font-weight: 500;
+}
+.mob-nav-dot {
+  width: 4px; height: 4px;
+  border-radius: 50%;
+  background: var(--teal);
+  margin-top: -2px;
+  display: none;
+}
+.mob-nav-item.has-badge .mob-nav-dot {
+  display: block;
+}
+
+/* ── Admin panel trigger ─────────────────────────────────────────── */
+.mob-admin-btn {
+  display: none;
+}
+
+@media (max-width: 768px) {
+
+  /* ── Shell & layout ── */
+  .shell {
+    grid-template-rows: 52px 1fr;
+  }
+  .body {
+    grid-template-columns: 1fr; /* no sidebar */
+    padding-bottom: 60px; /* space for bottom nav */
+  }
+  .sidebar {
+    display: none !important;
+  }
+  .content {
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+  .page {
+    padding: 16px;
+  }
+
+  /* ── Topbar ── */
+  .topbar {
+    padding: 0 14px;
+    gap: 8px;
+  }
+  .topbar-center {
+    display: none; /* hide breadcrumb — page title is in the page itself */
+  }
+  .topbar-right {
+    gap: 6px;
+  }
+  .file-chip {
+    display: none; /* shown in sidebar on desktop, not needed on mobile */
+  }
+  #ll-user-badge {
+    display: none; /* moved to admin panel */
+  }
+  #ll-drive-dot {
+    flex-shrink: 0;
+  }
+  .upload-btn {
+    font-size: 10px;
+    padding: 6px 10px;
+    gap: 5px;
+  }
+  .upload-btn svg {
+    width: 11px; height: 11px;
+  }
+
+  /* ── Show bottom nav ── */
+  .mob-nav {
+    display: block;
+  }
+
+  /* ── Page header ── */
+  .page-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+    margin-bottom: 16px;
+  }
+  .page-title {
+    font-size: 22px;
+  }
+
+  /* ── KPI grids → single column ── */
+  .g4, .g5 {
+    grid-template-columns: 1fr 1fr !important;
+    gap: 10px;
+  }
+  .kpi {
+    padding: 12px;
+  }
+  .kpi-value {
+    font-size: 18px;
+  }
+
+  /* ── Charts ── */
+  .charts-grid {
+    grid-template-columns: 1fr !important;
+  }
+  .chart-wrap, .chart-card canvas {
+    min-height: 180px !important;
+    height: 180px !important;
+  }
+  .chart-card {
+    padding: 12px;
+  }
+
+  /* ── Cards ── */
+  .card {
+    padding: 14px;
+  }
+
+  /* ── Tables ── */
+  .tbl-wrap {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    max-height: none;
+  }
+  .tbl {
+    min-width: 560px; /* force scroll rather than squish */
+  }
+
+  /* ── Lifecycle yearly view ── */
+  .yr-kpis {
+    display: none; /* too wide on mobile — show only year + revenue */
+  }
+  .yr-badge {
+    min-width: 64px;
+    font-size: 16px;
+    padding: 12px 14px;
+  }
+  .yr-header::after {
+    content: attr(data-rev);
+    font-family: var(--fn);
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text);
+    padding: 0 12px;
+    flex: 1;
+  }
+  .yr-months-grid {
+    grid-template-columns: repeat(6, 1fr); /* 2 rows of 6 instead of 1 row of 12 */
+  }
+  .yr-mo-rev {
+    font-size: 9px;
+  }
+  .yr-mo-units {
+    display: none;
+  }
+
+  /* ── Prediction workspace ── */
+  .pivot-wrap {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+  .pivot {
+    min-width: 480px;
+  }
+  .target-bar {
+    flex-wrap: wrap;
+    gap: 0;
+  }
+  .target-block {
+    min-width: 50%;
+    flex: none;
+    border-right: none;
+    border-bottom: 1px solid var(--border2);
+  }
+  .calc-row {
+    flex-wrap: wrap;
+    gap: 4px;
+  }
+
+  /* ── Comparison month switcher ── */
+  #cmpSwitcher {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    padding-bottom: 6px;
+  }
+
+  /* ── Overview charts ── */
+  #overviewCharts {
+    grid-template-columns: 1fr !important;
+  }
+
+  /* ── Modals ── */
+  .modal-inner {
+    max-height: 92vh;
+    margin: 0 12px;
+    width: calc(100% - 24px);
+    max-width: none !important;
+  }
+
+  /* ── Tab rows ── */
+  .tab-row {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    gap: 4px;
+    padding-bottom: 2px;
+    flex-wrap: nowrap;
+  }
+  .tab {
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+
+  /* ── Monthly upload 2-col → 1-col ── */
+  #page-upload > div[style*="grid-template-columns"] {
+    display: flex !important;
+    flex-direction: column !important;
+  }
+
+  /* ── Workspace acc-panel ── */
+  .acc-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+  .hist-header, .hist-row {
+    grid-template-columns: 2fr 1fr 1fr !important;
+    font-size: 10px;
+  }
+  .hist-header span:nth-child(n+4),
+  .hist-row span:nth-child(n+4) {
+    display: none; /* hide extra columns on mobile */
+  }
+}
+
+@media (max-width: 480px) {
+  .g4, .g5 {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+
+/* ═══════════════════════════════════════════════════════════════════════
+   MOBILE — bottom nav, collapsed topbar, single-column layouts
+   ═══════════════════════════════════════════════════════════════════════ */
+@media (max-width: 768px) {
+
+  /* ── Shell: stack topbar + content, no sidebar column ── */
+  .shell {
+    grid-template-columns: 1fr !important;
+    grid-template-rows: 48px 1fr 56px !important; /* topbar | content | bottom-nav */
+    height: 100dvh;
+  }
+
+  /* ── Sidebar: hidden on mobile ── */
+  .sidebar { display: none !important; }
+
+  /* ── Topbar: compact ── */
+  .topbar { padding: 0 14px; grid-column: 1; }
+  .topbar-center { display: none; }
+  .logo { font-size: 17px; }
+  #ll-user-badge { display: none; }
+  #ll-drive-dot { width: 7px; height: 7px; margin-right: 6px; }
+  .file-chip { max-width: 110px; overflow: hidden; }
+  .file-chip span:last-child { font-size: 9px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 80px; display: inline-block; }
+  .upload-btn { padding: 6px 10px; font-size: 10px; }
+  .upload-btn span { display: none; }
+  #saveSnapBtn span, #loadSnapBtn span { display: none; }
+
+  /* ── Bottom nav bar ── */
+  #ll-bottom-nav {
+    display: flex !important;
+    position: fixed;
+    bottom: 0; left: 0; right: 0;
+    height: 56px;
+    background: var(--bg2);
+    border-top: 1px solid var(--border);
+    z-index: 100;
+    align-items: center;
+    justify-content: space-around;
+    padding: 0 4px;
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+  .ll-bn-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 3px;
+    flex: 1;
+    padding: 6px 2px;
+    cursor: pointer;
+    color: var(--text4);
+    font-family: var(--fn);
+    font-size: 9px;
+    letter-spacing: .04em;
+    text-transform: uppercase;
+    border-radius: 8px;
+    transition: color .15s;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .ll-bn-item.on { color: var(--accent2); }
+  .ll-bn-item svg { flex-shrink: 0; }
+  .ll-bn-badge {
+    position: absolute;
+    top: 2px; right: calc(50% - 18px);
+    background: var(--accent2);
+    color: #000;
+    font-size: 7px;
+    font-weight: 700;
+    border-radius: 8px;
+    padding: 1px 4px;
+    font-family: var(--fn);
+    min-width: 14px;
+    text-align: center;
+  }
+  .ll-bn-item { position: relative; }
+
+  /* ── Content area: account for bottom nav ── */
+  .content { padding-bottom: 8px; }
+
+  /* ── Pages: less padding ── */
+  .page { padding: 16px 14px 20px; }
+  .page-title { font-size: 22px; }
+  .page-sub { font-size: 11px; }
+  .page-header { flex-direction: column; gap: 10px; align-items: flex-start; }
+
+  /* ── KPI grids: 2 columns on mobile ── */
+  .g4 { grid-template-columns: 1fr 1fr !important; gap: 8px; }
+  .g5 { grid-template-columns: 1fr 1fr !important; gap: 8px; }
+
+  /* ── Cards ── */
+  .card { padding: 12px 14px; }
+
+  /* ── Charts: min height ── */
+  .chart-wrap { height: 180px !important; min-height: 180px; }
+  canvas { max-height: 180px; }
+
+  /* ── Tables: horizontal scroll ── */
+  .tbl-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+  .tbl { min-width: 600px; }
+  .tbl th, .tbl td { padding: 8px 10px; font-size: 10px; white-space: nowrap; }
+
+  /* ── Tab rows ── */
+  .tab-row { overflow-x: auto; flex-wrap: nowrap; gap: 4px; padding-bottom: 4px; }
+  .tab { white-space: nowrap; font-size: 11px; padding: 6px 12px; }
+
+  /* ── Comparison month switcher ── */
+  #cmpSwitcher { overflow-x: auto; gap: 4px; flex-wrap: nowrap; }
+
+  /* ── Lifecycle yearly grid ── */
+  .yr-months-grid { grid-template-columns: repeat(6,1fr) !important; }
+  .yr-kpis { flex-wrap: wrap; }
+  .yr-kpi { min-width: 40%; border-right: none !important; border-bottom: 1px solid var(--border2); padding: 8px 12px; }
+  .yr-badge { font-size: 16px; padding: 10px 14px; min-width: 64px; }
+
+  /* ── Workspace pivot tables ── */
+  .pivot-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+  .pivot { min-width: 500px; }
+
+  /* ── Charts grid ── */
+  .charts-grid { grid-template-columns: 1fr !important; }
+
+  /* ── Modals: full screen on mobile ── */
+  .modal-inner {
+    width: 100% !important;
+    max-width: 100% !important;
+    min-height: 50vh;
+    border-radius: 16px 16px 0 0 !important;
+    position: fixed !important;
+    bottom: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    margin: 0 !important;
+  }
+  .modal-overlay { align-items: flex-end !important; }
+
+  /* ── Upload page ── */
+  #page-upload > div[style*="grid"] {
+    grid-template-columns: 1fr !important;
+  }
+
+  /* ── Comparison page two-column grid ── */
+  #page-comparison .g4 { grid-template-columns: 1fr 1fr !important; }
+
+  /* ── Sidebar footer stats: show as a small row in topbar instead ── */
+  #ll-mobile-stats {
+    display: flex !important;
+    gap: 10px;
+    font-family: var(--fn);
+    font-size: 9px;
+    color: var(--text4);
+  }
+
+  /* ── Admin panel mobile ── */
+  #ll-admin-panel .ll-admin-box {
+    width: 100% !important;
+    max-width: 100% !important;
+    border-radius: 16px 16px 0 0 !important;
+    position: fixed !important;
+    bottom: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+  }
+}
+
+/* Bottom nav hidden on desktop */
+#ll-bottom-nav { display: none; }
+
 </style>
   <!-- Google Identity Services -->
   <script src="https://accounts.google.com/gsi/client" async></script>
@@ -801,6 +1257,31 @@ html{transition:background .2s,color .2s}
 
 <div id="ll-app" style="display:none">
 <div class="shell">
+<!-- Mobile bottom nav -->
+<nav id="ll-bottom-nav">
+  <div class="ll-bn-item on" id="bn-home" onclick="llBnNav('home',this,'Overview')">
+    <svg width="20" height="20" viewBox="0 0 16 16" fill="none"><rect x="2" y="2" width="5.5" height="5.5" rx="1.5" stroke="currentColor" stroke-width="1.3"/><rect x="8.5" y="2" width="5.5" height="5.5" rx="1.5" stroke="currentColor" stroke-width="1.3"/><rect x="2" y="8.5" width="5.5" height="5.5" rx="1.5" stroke="currentColor" stroke-width="1.3"/><rect x="8.5" y="8.5" width="5.5" height="5.5" rx="1.5" stroke="currentColor" stroke-width="1.3"/></svg>
+    Overview
+  </div>
+  <div class="ll-bn-item" id="bn-lifecycle" onclick="llBnNav('lifecycle',this,'Lifecycle')">
+    <svg width="20" height="20" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="5.5" stroke="currentColor" stroke-width="1.3"/><path d="M8 5v3l2 1.5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
+    Lifecycle
+    <span class="ll-bn-badge" id="bn-badge-lc" style="display:none"></span>
+  </div>
+  <div class="ll-bn-item" id="bn-predictions" onclick="llBnNav('predictions',this,'Predictions')">
+    <svg width="20" height="20" viewBox="0 0 16 16" fill="none"><path d="M2 11 L5 8 L8 9 L11 5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="2 1.5"/><path d="M11 5 L14 2" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
+    Predict
+  </div>
+  <div class="ll-bn-item" id="bn-listings" onclick="llBnNav('listings',this,'All Listings')">
+    <svg width="20" height="20" viewBox="0 0 16 16" fill="none"><path d="M3 4h10M3 8h10M3 12h6" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
+    Listings
+  </div>
+  <div class="ll-bn-item" id="bn-more" onclick="llBnMore(this)">
+    <svg width="20" height="20" viewBox="0 0 16 16" fill="none"><circle cx="3" cy="8" r="1.2" fill="currentColor"/><circle cx="8" cy="8" r="1.2" fill="currentColor"/><circle cx="13" cy="8" r="1.2" fill="currentColor"/></svg>
+    More
+  </div>
+</nav>
+
 
 <!-- TOPBAR -->
 <div class="topbar">
@@ -811,7 +1292,7 @@ html{transition:background .2s,color .2s}
     </div>
   </div>
   <div class="topbar-right">
-    <span id="ll-drive-dot" title="Drive status"></span><span id="ll-user-badge" onclick="llSignOut()" title="Click to sign out"></span>
+    <span id="ll-drive-dot" title="Drive status"></span><span id="ll-user-badge" onclick="llOpenAdmin()" title="Manage access"></span>
     <div class="file-chip" id="fileChip">
       <span class="file-chip-dot"></span>
       <span id="fileChipText">No file loaded</span>
@@ -4270,7 +4751,352 @@ function lcYrDrillMonth(yr,mo,cell){
   window.addEventListener('ll-app-ready', function(){ goTo(0); }, { once: true });
 })();
 
+
+// ── Admin Panel ───────────────────────────────────────────────────────────────
+function llOpenAdmin() {
+  var el = document.getElementById('ll-admin');
+  if (!el) return;
+  var emailEl = document.getElementById('ll-admin-email');
+  if (emailEl) emailEl.textContent = _userEmail || '—';
+  el.style.display = 'flex';
+  llAdminLoadUsers();
+}
+function llCloseAdmin() {
+  var el = document.getElementById('ll-admin');
+  if (el) el.style.display = 'none';
+}
+
+function llAdminLoadUsers() {
+  var ul = document.getElementById('ll-admin-users');
+  if (!ul) return;
+  ul.innerHTML = '<div style="font-family:var(--fn);font-size:11px;color:var(--text4)">Loading…</div>';
+  _readFile('listlens_users.json', []).then(function(users) {
+    if (!users.length) {
+      ul.innerHTML = '<div style="font-family:var(--fn);font-size:11px;color:var(--text4)">No access list — everyone with a Google account can sign in.<br><br>Add the first user below to restrict access.</div>';
+      return;
+    }
+    ul.innerHTML = users.map(function(email) {
+      var isSelf = email === _userEmail;
+      return '<div style="display:flex;align-items:center;justify-content:space-between;padding:8px 12px;background:var(--bg3);border-radius:8px;border:1px solid var(--border)">' +
+        '<div style="display:flex;align-items:center;gap:8px">' +
+          '<div style="width:7px;height:7px;border-radius:50%;background:' + (isSelf ? 'var(--teal)' : 'var(--text4)') + ';flex-shrink:0"></div>' +
+          '<span style="font-family:var(--fn);font-size:12px;color:var(--text)">' + email + '</span>' +
+          (isSelf ? '<span style="font-family:var(--fn);font-size:9px;color:var(--teal);padding:1px 6px;border:1px solid rgba(0,212,170,.3);border-radius:4px">you</span>' : '') +
+        '</div>' +
+        (isSelf ? '' : '<button onclick="llAdminRemove(\'' + email + '\')" style="background:none;border:none;color:var(--text4);cursor:pointer;font-size:13px;padding:2px 4px;border-radius:4px" onmouseover="this.style.color=\'var(--red)\'" onmouseout="this.style.color=\'var(--text4)\'">✕</button>') +
+      '</div>';
+    }).join('');
+  }).catch(function(e) {
+    ul.innerHTML = '<div style="font-family:var(--fn);font-size:11px;color:var(--red)">Could not load users: ' + e.message + '</div>';
+  });
+}
+
+function llAdminAdd() {
+  var input = document.getElementById('ll-admin-input');
+  var msg = document.getElementById('ll-admin-msg');
+  var email = (input.value || '').trim().toLowerCase();
+  if (!email || !email.includes('@')) {
+    msg.style.color = 'var(--red)';
+    msg.textContent = 'Enter a valid email address.';
+    return;
+  }
+  msg.style.color = 'var(--text4)';
+  msg.textContent = 'Saving…';
+  llAddUser(email).then(function() {
+    input.value = '';
+    msg.style.color = 'var(--teal)';
+    msg.textContent = '✓ ' + email + ' added.';
+    llAdminLoadUsers();
+    setTimeout(function(){ msg.textContent = ''; }, 3000);
+  }).catch(function(e) {
+    msg.style.color = 'var(--red)';
+    msg.textContent = 'Error: ' + e.message;
+  });
+}
+
+function llAdminRemove(email) {
+  var msg = document.getElementById('ll-admin-msg');
+  msg.style.color = 'var(--text4)';
+  msg.textContent = 'Removing…';
+  llRemoveUser(email).then(function() {
+    msg.style.color = 'var(--amber)';
+    msg.textContent = email + ' removed.';
+    llAdminLoadUsers();
+    setTimeout(function(){ msg.textContent = ''; }, 3000);
+  }).catch(function(e) {
+    msg.style.color = 'var(--red)';
+    msg.textContent = 'Error: ' + e.message;
+  });
+}
+// Close on backdrop click
+document.addEventListener('click', function(e) {
+  var panel = document.getElementById('ll-admin');
+  if (panel && e.target === panel) llCloseAdmin();
+});
+
+// ── Mobile nav sync ───────────────────────────────────────────────────────────
+function mobNavActivate(id) {
+  document.querySelectorAll('.mob-nav-item').forEach(function(el) {
+    el.classList.remove('on');
+  });
+  var el = document.getElementById(id);
+  if (el) el.classList.add('on');
+}
+
+// ── Admin Panel: manage Drive access list ─────────────────────────────────────
+function llOpenAdmin() {
+  // Only show if we have a token (signed in)
+  if (!_token) { llSignIn(); return; }
+
+  // Create overlay
+  const overlay = document.createElement('div');
+  overlay.id = 'll-admin-overlay';
+  overlay.style.cssText = 'position:fixed;inset:0;z-index:99900;background:rgba(0,0,0,.7);display:flex;align-items:center;justify-content:center;padding:20px';
+  overlay.onclick = function(e){ if(e.target===overlay) llCloseAdmin(); };
+
+  overlay.innerHTML = `
+    <div class="ll-admin-box" style="background:#0f1117;border:1px solid #2e3850;border-radius:14px;width:440px;max-width:100%;max-height:85vh;display:flex;flex-direction:column;overflow:hidden;box-shadow:0 8px 40px rgba(0,0,0,.7)">
+      <div style="padding:18px 22px 14px;border-bottom:1px solid #1e2333;display:flex;align-items:center;justify-content:space-between;flex-shrink:0">
+        <div>
+          <div style="font-family:'Syne',sans-serif;font-size:15px;font-weight:700;color:#e8eaf2">Access management</div>
+          <div style="font-family:'JetBrains Mono',monospace;font-size:10px;color:#5c6480;margin-top:2px">ListLens/listlens_users.json · Drive</div>
+        </div>
+        <button onclick="llCloseAdmin()" style="background:none;border:none;cursor:pointer;color:#5c6480;font-size:18px;line-height:1;padding:4px" onmouseover="this.style.color='#e8eaf2'" onmouseout="this.style.color='#5c6480'">×</button>
+      </div>
+      <div id="ll-admin-body" style="flex:1;overflow-y:auto;padding:18px 22px">
+        <div style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#5c6480;text-align:center;padding:20px">Loading…</div>
+      </div>
+      <div style="padding:14px 22px 18px;border-top:1px solid #1e2333;flex-shrink:0">
+        <div style="display:flex;gap:8px">
+          <input id="ll-admin-input" type="email" placeholder="user@example.com"
+            style="flex:1;background:#141720;border:1px solid #252d40;border-radius:8px;padding:9px 12px;font-family:'JetBrains Mono',monospace;font-size:12px;color:#e8eaf2;outline:none"
+            onkeydown="if(event.key==='Enter')llAdminAdd()"
+            onfocus="this.style.borderColor='#4f8ef7'" onblur="this.style.borderColor='#252d40'">
+          <button onclick="llAdminAdd()" style="background:#4f8ef7;border:none;cursor:pointer;color:#fff;font-family:'JetBrains Mono',monospace;font-size:11px;padding:9px 16px;border-radius:8px;white-space:nowrap;transition:background .15s" onmouseover="this.style.background='#6ba3ff'" onmouseout="this.style.background='#4f8ef7'">Add user</button>
+        </div>
+        <div id="ll-admin-msg" style="font-family:'JetBrains Mono',monospace;font-size:10px;margin-top:8px;min-height:14px"></div>
+      </div>
+    </div>`;
+
+  document.body.appendChild(overlay);
+  llAdminLoad();
+}
+
+function llCloseAdmin() {
+  const overlay = document.getElementById('ll-admin-overlay');
+  if (overlay) overlay.remove();
+}
+
+function llAdminMsg(msg, color) {
+  const el = document.getElementById('ll-admin-msg');
+  if (el) { el.textContent = msg; el.style.color = color || '#5c6480'; }
+}
+
+function llAdminLoad() {
+  const body = document.getElementById('ll-admin-body');
+  if (!body) return;
+  body.innerHTML = '<div style="font-family:\'JetBrains Mono\',monospace;font-size:11px;color:#5c6480;text-align:center;padding:20px">Loading…</div>';
+
+  _readFile('listlens_users.json', []).then(function(users) {
+    if (!document.getElementById('ll-admin-overlay')) return;
+    if (!users.length) {
+      body.innerHTML = '<div style="font-family:\'JetBrains Mono\',monospace;font-size:11px;color:#5c6480;padding:8px 0">No access list yet — everyone with a Google account can sign in.<br><br>Add your first user below to restrict access.</div>';
+      return;
+    }
+    body.innerHTML = users.map(function(email, i) {
+      const isMe = email === _userEmail;
+      return '<div style="display:flex;align-items:center;justify-content:space-between;padding:9px 0;border-bottom:1px solid #1e2333">' +
+        '<div style="display:flex;align-items:center;gap:10px">' +
+          '<div style="width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,#4f8ef7,#00d4aa);display:flex;align-items:center;justify-content:center;font-family:\'JetBrains Mono\',monospace;font-size:11px;font-weight:700;color:#0a0b0f;flex-shrink:0">' +
+            email.charAt(0).toUpperCase() +
+          '</div>' +
+          '<div>' +
+            '<div style="font-family:\'JetBrains Mono\',monospace;font-size:12px;color:#e8eaf2">' + email + '</div>' +
+            (isMe ? '<div style="font-family:\'JetBrains Mono\',monospace;font-size:9px;color:#4f8ef7;margin-top:2px">you</div>' : '') +
+          '</div>' +
+        '</div>' +
+        (isMe ? '<span style="font-size:9px;color:#3a4060;font-family:\'JetBrains Mono\',monospace">owner</span>' :
+          '<button onclick="llAdminRemove(\'' + email + '\')" style="background:none;border:1px solid #1e2333;cursor:pointer;color:#5c6480;font-size:10px;font-family:\'JetBrains Mono\',monospace;padding:4px 10px;border-radius:6px;transition:all .15s" onmouseover="this.style.color=\'#ff5263\';this.style.borderColor=\'rgba(255,82,99,.3)\'" onmouseout="this.style.color=\'#5c6480\';this.style.borderColor=\'#1e2333\'">Remove</button>'
+        ) +
+      '</div>';
+    }).join('');
+  }).catch(function(e) {
+    const body = document.getElementById('ll-admin-body');
+    if (body) body.innerHTML = '<div style="color:#ff5263;font-family:\'JetBrains Mono\',monospace;font-size:11px">Failed to load: ' + e.message + '</div>';
+  });
+}
+
+function llAdminAdd() {
+  const input = document.getElementById('ll-admin-input');
+  if (!input) return;
+  const email = input.value.trim().toLowerCase();
+  if (!email || !email.includes('@')) { llAdminMsg('Enter a valid email', '#f59e0b'); return; }
+  llAdminMsg('Adding…', '#5c6480');
+  _readFile('listlens_users.json', []).then(function(users) {
+    if (users.indexOf(email) >= 0) { llAdminMsg(email + ' already has access', '#f59e0b'); return; }
+    users.push(email);
+    return _writeFile('listlens_users.json', users).then(function() {
+      llAdminMsg('✓ ' + email + ' added', '#00d4aa');
+      input.value = '';
+      setTimeout(llAdminLoad, 400);
+    });
+  }).catch(function(e) { llAdminMsg('Failed: ' + e.message, '#ff5263'); });
+}
+
+function llAdminRemove(email) {
+  if (!confirm('Remove ' + email + '?')) return;
+  llAdminMsg('Removing…', '#5c6480');
+  _readFile('listlens_users.json', []).then(function(users) {
+    const updated = users.filter(function(u){ return u !== email; });
+    return _writeFile('listlens_users.json', updated).then(function() {
+      llAdminMsg('✓ Removed', '#00d4aa');
+      setTimeout(llAdminLoad, 400);
+    });
+  }).catch(function(e) { llAdminMsg('Failed: ' + e.message, '#ff5263'); });
+}
+
+
+// ── Mobile bottom nav ─────────────────────────────────────────────────────────
+function llBnNav(page, el, label) {
+  // Deactivate all bottom nav items
+  document.querySelectorAll('.ll-bn-item').forEach(function(i){ i.classList.remove('on'); });
+  el.classList.add('on');
+  // Close any open "More" drawer
+  const drawer = document.getElementById('ll-bn-drawer');
+  if (drawer) drawer.remove();
+  // Call the real nav function
+  const sidebarItem = document.querySelector("[onclick*=\"nav('"+page+"'\"]");
+  if (sidebarItem) sidebarItem.click();
+  else {
+    // Fallback: show the page directly
+    document.querySelectorAll('.page').forEach(function(p){ p.classList.remove('on'); });
+    const pg = document.getElementById('page-'+page);
+    if (pg) pg.classList.add('on');
+    if (typeof nav === 'function') {
+      // Create a dummy element for nav
+      const dummy = document.createElement('div');
+      nav(page, dummy, label);
+    }
+  }
+}
+
+function llBnMore(el) {
+  // Toggle "More" drawer showing Comparison + Upload
+  const existing = document.getElementById('ll-bn-drawer');
+  if (existing) { existing.remove(); el.classList.remove('on'); return; }
+  el.classList.add('on');
+  const drawer = document.createElement('div');
+  drawer.id = 'll-bn-drawer';
+  drawer.style.cssText = 'position:fixed;bottom:56px;left:0;right:0;background:var(--bg2);border-top:1px solid var(--border);z-index:99;padding:8px 0;animation:llDrawerIn .2s ease';
+  drawer.innerHTML = `
+    <style>@keyframes llDrawerIn{from{transform:translateY(100%);opacity:0}to{transform:translateY(0);opacity:1}}</style>
+    <div onclick="llBnNav('comparison',document.getElementById('bn-more'),'Comparison');document.getElementById('ll-bn-drawer')?.remove()" style="display:flex;align-items:center;gap:14px;padding:14px 24px;cursor:pointer;font-family:var(--fn);font-size:13px;color:var(--text2)" onmouseover="this.style.background='var(--bg3)'" onmouseout="this.style.background=''">
+      <svg width="18" height="18" viewBox="0 0 16 16" fill="none"><path d="M2 11 L5 7 L8 9 L11 4 L14 6" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      Comparison
+    </div>
+    <div onclick="llBnNav('upload',document.getElementById('bn-more'),'Monthly Upload');document.getElementById('ll-bn-drawer')?.remove()" style="display:flex;align-items:center;gap:14px;padding:14px 24px;cursor:pointer;font-family:var(--fn);font-size:13px;color:var(--text2)" onmouseover="this.style.background='var(--bg3)'" onmouseout="this.style.background=''">
+      <svg width="18" height="18" viewBox="0 0 16 16" fill="none"><path d="M8 11V3M5 6l3-3 3 3" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/><path d="M3 13h10" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
+      Monthly upload
+    </div>
+    <div onclick="llOpenAdmin();document.getElementById('ll-bn-drawer')?.remove();document.getElementById('bn-more')?.classList.remove('on')" style="display:flex;align-items:center;gap:14px;padding:14px 24px;cursor:pointer;font-family:var(--fn);font-size:13px;color:var(--text2)" onmouseover="this.style.background='var(--bg3)'" onmouseout="this.style.background=''">
+      <svg width="18" height="18" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="6" r="2.5" stroke="currentColor" stroke-width="1.3"/><path d="M3 13c0-2.76 2.24-5 5-5s5 2.24 5 5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
+      Manage access
+    </div>`;
+  document.body.appendChild(drawer);
+  // Close on outside tap
+  setTimeout(function(){
+    document.addEventListener('click', function closeFn(e){
+      if (!drawer.contains(e.target) && e.target !== el) {
+        drawer.remove(); el.classList.remove('on');
+        document.removeEventListener('click', closeFn);
+      }
+    });
+  }, 50);
+}
+
+// Sync bottom nav with sidebar nav
+(function(){
+  const origNav = typeof nav === 'function' ? nav : null;
+  if (!origNav) return;
+  nav = function(id, el, label) {
+    origNav(id, el, label);
+    // Update bottom nav active state
+    document.querySelectorAll('.ll-bn-item').forEach(function(i){ i.classList.remove('on'); });
+    const bnItem = document.getElementById('bn-' + id);
+    if (bnItem) bnItem.classList.add('on');
+    else {
+      // Comparison/upload are in "More"
+      const moreBtn = document.getElementById('bn-more');
+      if (moreBtn && (id === 'comparison' || id === 'upload')) moreBtn.classList.add('on');
+    }
+  };
+})();
+
 </script>
 </div><!-- /ll-app -->
+
+<!-- ── Mobile bottom nav ── -->
+<nav class="mob-nav" id="mobNav">
+  <div class="mob-nav-items">
+    <button class="mob-nav-item on" id="mobn-home" onclick="nav('home',this,'Overview');mobNavActivate('mobn-home')">
+      <svg width="20" height="20" viewBox="0 0 16 16" fill="none"><rect x="2" y="2" width="5.5" height="5.5" rx="1.5" stroke="currentColor" stroke-width="1.3"/><rect x="8.5" y="2" width="5.5" height="5.5" rx="1.5" stroke="currentColor" stroke-width="1.3"/><rect x="2" y="8.5" width="5.5" height="5.5" rx="1.5" stroke="currentColor" stroke-width="1.3"/><rect x="8.5" y="8.5" width="5.5" height="5.5" rx="1.5" stroke="currentColor" stroke-width="1.3"/></svg>
+      <span class="mob-nav-label">Overview</span>
+    </button>
+    <button class="mob-nav-item" id="mobn-lifecycle" onclick="nav('lifecycle',this,'Lifecycle');mobNavActivate('mobn-lifecycle')">
+      <svg width="20" height="20" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="5.5" stroke="currentColor" stroke-width="1.3"/><path d="M8 5v3l2 1.5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
+      <span class="mob-nav-label">Lifecycle</span>
+      <div class="mob-nav-dot"></div>
+    </button>
+    <button class="mob-nav-item" id="mobn-predictions" onclick="nav('predictions',this,'Predictions');mobNavActivate('mobn-predictions')">
+      <svg width="20" height="20" viewBox="0 0 16 16" fill="none"><path d="M2 11L5 8l3 1 3-4" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="2 1.5"/><path d="M11 5l3-3" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
+      <span class="mob-nav-label">Predict</span>
+    </button>
+    <button class="mob-nav-item" id="mobn-comparison" onclick="nav('comparison',this,'Comparison');mobNavActivate('mobn-comparison')">
+      <svg width="20" height="20" viewBox="0 0 16 16" fill="none"><path d="M2 11L5 7l3 2 4-5 2 2" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      <span class="mob-nav-label">Compare</span>
+    </button>
+    <button class="mob-nav-item" id="mobn-listings" onclick="nav('listings',this,'All Listings');mobNavActivate('mobn-listings')">
+      <svg width="20" height="20" viewBox="0 0 16 16" fill="none"><path d="M3 4h10M3 8h10M3 12h6" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
+      <span class="mob-nav-label">Listings</span>
+    </button>
+  </div>
+</nav>
+
+<!-- ── Admin Panel ── -->
+<div id="ll-admin" style="display:none;position:fixed;inset:0;z-index:99000;background:rgba(0,0,0,.75);align-items:center;justify-content:center">
+  <div style="background:var(--bg2);border:1px solid var(--border2);border-radius:14px;width:440px;max-width:calc(100vw - 32px);max-height:90vh;display:flex;flex-direction:column;box-shadow:0 8px 48px rgba(0,0,0,.7)">
+    <!-- Header -->
+    <div style="padding:20px 24px 14px;border-bottom:1px solid var(--border2);display:flex;align-items:center;justify-content:space-between;flex-shrink:0">
+      <div>
+        <div style="font-family:var(--display);font-size:15px;font-weight:600;color:var(--text)">Access management</div>
+        <div style="font-family:var(--fn);font-size:10px;color:var(--text4);margin-top:2px">Signed in as <span id="ll-admin-email" style="color:var(--teal)"></span></div>
+      </div>
+      <button onclick="llCloseAdmin()" style="background:none;border:none;color:var(--text3);cursor:pointer;font-size:18px;padding:2px 6px;border-radius:6px" onmouseover="this.style.color='var(--text)'" onmouseout="this.style.color='var(--text3)'">✕</button>
+    </div>
+    <!-- Users list -->
+    <div style="flex:1;overflow-y:auto;padding:16px 24px;min-height:0">
+      <div style="font-family:var(--fn);font-size:9px;color:var(--text4);text-transform:uppercase;letter-spacing:.1em;margin-bottom:10px">Current users</div>
+      <div id="ll-admin-users" style="display:flex;flex-direction:column;gap:6px;margin-bottom:16px">
+        <div style="font-family:var(--fn);font-size:11px;color:var(--text4)">Loading…</div>
+      </div>
+      <!-- Add user -->
+      <div style="font-family:var(--fn);font-size:9px;color:var(--text4);text-transform:uppercase;letter-spacing:.1em;margin-bottom:8px">Add user</div>
+      <div style="display:flex;gap:8px">
+        <input id="ll-admin-input" type="email" placeholder="email@example.com"
+          style="flex:1;font-family:var(--fn);font-size:12px;padding:9px 12px;border-radius:8px;border:1px solid var(--border2);background:var(--bg3);color:var(--text);outline:none"
+          onfocus="this.style.borderColor='var(--teal)'" onblur="this.style.borderColor='var(--border2)'"
+          onkeydown="if(event.key==='Enter')llAdminAdd()">
+        <button onclick="llAdminAdd()" style="font-family:var(--fn);font-size:11px;padding:9px 16px;border-radius:8px;border:1px solid rgba(0,212,170,.4);background:rgba(0,212,170,.08);color:var(--teal);cursor:pointer;transition:all .15s;white-space:nowrap" onmouseover="this.style.background='rgba(0,212,170,.16)'" onmouseout="this.style.background='rgba(0,212,170,.08)'">Add ↵</button>
+      </div>
+      <div id="ll-admin-msg" style="font-family:var(--fn);font-size:10px;margin-top:8px;min-height:16px"></div>
+    </div>
+    <!-- Footer -->
+    <div style="padding:14px 24px;border-top:1px solid var(--border2);flex-shrink:0;display:flex;justify-content:space-between;align-items:center">
+      <div style="font-family:var(--fn);font-size:9px;color:var(--text4)">Changes save instantly to Drive · open access if no users file exists</div>
+      <button onclick="llSignOut()" style="font-family:var(--fn);font-size:10px;padding:6px 14px;border-radius:7px;border:1px solid rgba(255,82,99,.3);background:transparent;color:var(--red);cursor:pointer;white-space:nowrap" onmouseover="this.style.background='rgba(255,82,99,.08)'" onmouseout="this.style.background='transparent'">Sign out</button>
+    </div>
+  </div>
+</div>
+
 </body>
 </html>
