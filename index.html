@@ -4882,6 +4882,8 @@ function llOpenAdmin() {
 
   document.body.appendChild(overlay);
   llAdminLoad();
+  // Autofocus the email input
+  setTimeout(function(){ var inp = document.getElementById('ll-admin-input'); if(inp) inp.focus(); }, 300);
 }
 
 function llCloseAdmin() {
@@ -4898,6 +4900,11 @@ function llAdminLoad() {
   const body = document.getElementById('ll-admin-body');
   if (!body) return;
   body.innerHTML = '<div style="font-family:\'JetBrains Mono\',monospace;font-size:11px;color:#5c6480;text-align:center;padding:20px">Loading…</div>';
+
+  if (!_folderId) {
+    body.innerHTML = '<div style="font-family:\'JetBrains Mono\',monospace;font-size:11px;color:#f59e0b;text-align:center;padding:20px">Drive not connected yet.<br>Please wait a moment and try again.</div>';
+    return;
+  }
 
   _readFile('listlens_users.json', []).then(function(users) {
     if (!document.getElementById('ll-admin-overlay')) return;
