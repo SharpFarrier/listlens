@@ -3054,8 +3054,8 @@ function getManualPred(){
 }
 
 function renderPred(){
-  $('predSub').textContent=`Predicting ${NEXT_LABEL} · data through ${CMP_PERIOD} · ${mp?'manual prediction':'no prediction saved'}`;
   const mp=getManualPred();
+  $('predSub').textContent=`Predicting ${NEXT_LABEL} · data through ${CMP_PERIOD} · ${mp?'manual prediction':'no prediction saved'}`;
   const curRev=pRev(CMP_PERIOD);
   const perAsin=PREDICTIONS.filter(p=>p.asin!=='__portfolio__');
 
